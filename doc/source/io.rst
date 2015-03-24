@@ -41,6 +41,7 @@ object.
     * :ref:`read_html<io.read_html>`
     * :ref:`read_gbq<io.bigquery>` (experimental)
     * :ref:`read_stata<io.stata_reader>`
+    * :ref:`read_sas<io.sas_reader>`
     * :ref:`read_clipboard<io.clipboard>`
     * :ref:`read_pickle<io.pickle>`
 
@@ -4019,6 +4020,24 @@ easy conversion to and from pandas.
 .. _xray: http://xray.readthedocs.org/
 
 .. _io.perf:
+
+SAS Format
+----------
+
+.. versionadded:: 0.17.0
+
+.. _io.sas:
+
+The top-level function ``read_sas`` currently can only read SAS xport
+(.XPT) format files.  These files only contain two value types: ASCII
+text and double precision numeric values.  There is no automatic type
+conversion to integers, dates, or categoricals.  Specify a
+``chunksize`` or use ``iterator=True`` to obtain an ``XportReader``
+object for incrementally reading the file.  The ``XportReader`` object
+also has attributes that contain some additional information about the
+file and its variables.  There is currently no support for writing SAS
+files.
+
 
 Performance Considerations
 --------------------------

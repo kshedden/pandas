@@ -87,6 +87,13 @@ Class for reading SAS Xport files.
 
 %(_base_params_doc)s
 %(_params2_doc)s
+
+Attributes
+----------
+member_info : list
+    Contains information about the file
+fields : list
+    Contains information about the variables in the file
 """ % {"_base_params_doc": _base_params_doc,
        "_params2_doc": _params2_doc}
 
