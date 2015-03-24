@@ -33,22 +33,34 @@ _base_params_doc = """\
 Parameters
 ----------
 filepath_or_buffer : string or file-like object
-    Path to .XPT file or object implementing binary read method.
+    Path to SAS file or object implementing binary read method."""
+
+_format_param_doc = """\
+format : string
+    Data file format, only xport is currently implemented."""
+
+_params2_doc = """\
 index : identifier of index column
     Identifier of column that should be used as index of the DataFrame.
 encoding : string
     Encoding for text data.
 chunksize : int
-    Read file `chunksize` lines at a time."""
+    Read file `chunksize` lines at a time, returns iterator."""
+
+_format_params_doc = """\
+format : string
+    File format, only `xport` is currently supported."""
 
 _iterator_doc = """\
 iterator : boolean, default False
-    Return XportReader object for reading incrementally."""
+    Return XportReader object for reading file incrementally."""
 
 
-_read_xport_doc = """Read a SAS xport file into a DataFrame.
+_read_sas_doc = """Read a SAS file into a DataFrame.
 
 %(_base_params_doc)s
+%(_format_params_doc)s
+%(_params2_doc)s
 %(_iterator_doc)s
 
 Returns
@@ -58,13 +70,15 @@ DataFrame or XportReader
 Examples
 --------
 Read a SAS Xport file:
->> df = pandas.read_xport('filename.XPT')
+>> df = pandas.read_sas('filename.XPT')
 
-Read a xport file in 10,000 line chunks:
->> itr = pandas.read_xport('filename.XPT', chunksize=10000)
+Read a Xport file in 10,000 line chunks:
+>> itr = pandas.read_sas('filename.XPT', chunksize=10000)
 >> for chunk in itr:
 >>     do_something(chunk)
 """ % {"_base_params_doc": _base_params_doc,
+       "_format_params_doc": _format_params_doc,
+       "_params2_doc": _params2_doc,
        "_iterator_doc": _iterator_doc}
 
 
@@ -72,7 +86,9 @@ _xport_reader_doc = """\
 Class for reading SAS Xport files.
 
 %(_base_params_doc)s
-""" % {"_base_params_doc": _base_params_doc}
+%(_params2_doc)s
+""" % {"_base_params_doc": _base_params_doc,
+       "_params2_doc": _params2_doc}
 
 
 _read_method_doc = """\
@@ -90,9 +106,9 @@ A DataFrame.
 """
 
 
-@Appender(_read_xport_doc)
-def read_xport(filepath_or_buffer, index=None, encoding='ISO-8859-1',
-               chunksize=None, iterator=False):
+@Appender(_read_sas_doc)
+def read_sas(filepath_or_buffer, format='xport', index=None, encoding='ISO-8859-1',
+             chunksize=None, iterator=False):
 
     reader = XportReader(filepath_or_buffer, index=index, encoding=encoding,
                          chunksize=chunksize)

@@ -1,7 +1,7 @@
 import pandas as pd
 import pandas.util.testing as tm
 from pandas import compat
-from pandas.io.sas import XportReader, read_xport
+from pandas.io.sas import XportReader, read_sas
 import os
 
 # CSV versions of test XPT files were obtained using the R foreign library
@@ -35,8 +35,8 @@ class TestXport(tm.TestCase):
         data = reader.get_chunk()
         tm.assert_frame_equal(data, data_csv.iloc[0:10, :], check_dtype=False)
 
-        # Read full file with `read_xport` method
-        data = read_xport(self.file01)
+        # Read full file with `read_sas` method
+        data = read_sas(self.file01)
         tm.assert_frame_equal(data, data_csv, check_dtype=False)
 
 
@@ -95,5 +95,5 @@ class TestXport(tm.TestCase):
         data = XportReader(self.file03).read()
         tm.assert_frame_equal(data, data_csv, check_dtype=False)
 
-        data = read_xport(self.file03)
+        data = read_sas(self.file03)
         tm.assert_frame_equal(data, data_csv, check_dtype=False)
