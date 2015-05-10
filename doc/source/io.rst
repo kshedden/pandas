@@ -4028,16 +4028,26 @@ SAS Format
 
 .. _io.sas:
 
-The top-level function ``read_sas`` currently can only read SAS xport
-(.XPT) format files.  These files only contain two value types: ASCII
-text and double precision numeric values.  There is no automatic type
-conversion to integers, dates, or categoricals.  Specify a
-``chunksize`` or use ``iterator=True`` to obtain an ``XportReader``
-object for incrementally reading the file.  The ``XportReader`` object
-also has attributes that contain some additional information about the
-file and its variables.  There is currently no support for writing SAS
-files.
+The top-level function ``read_sas`` currently can read (but not write)
+SAS xport (.XPT) format files.  Pandas cannot currently handle
+SAS7BDAT files.  XPORT files only contain two value types: ASCII text
+and double precision numeric values.  There is no automatic type
+conversion to integers, dates, or categoricals.  By default the whole
+file is read and returned as a ``DataFrame``.  Specify a ``chunksize``
+or use ``iterator=True`` to obtain an ``XportReader`` object for
+incrementally reading the file.  The ``XportReader`` object also has
+attributes that contain additional information about the file and its
+variables.
 
+Read a SAS XPORT file:
+
+    df = pd.read_sas('sas_xport.xpt')
+
+Obtain an iterator and read an XPORT file 100,000 lines at a time:
+
+    rdr = pd.read_sas('sas_xport.xpt', chunk=100000)
+    for chunk in rdr:
+        do_something(chunk)
 
 Performance Considerations
 --------------------------
