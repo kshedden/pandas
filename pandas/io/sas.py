@@ -128,7 +128,10 @@ def read_sas(filepath_or_buffer, format='xport', index=None, encoding='ISO-8859-
 
 def _parse_date(datestr):
     """ Given a date in xport format, return Python date. """
-    return datetime.strptime(datestr, "%d%b%y:%H:%M:%S") # e.g. "16FEB11:10:07:55"
+    try:
+        return datetime.strptime(datestr, "%d%b%y:%H:%M:%S") # e.g. "16FEB11:10:07:55"
+    except ValueError:
+        return pd.NaT
 
 
 def _split_line(s, parts):
@@ -436,9 +439,9 @@ class XportReader(object):
                 v = _parse_float_vec(vec)
                 v[miss] = np.nan
             elif self.fields[j]['ntype'] == 'char':
-                v = [x.rstrip() for x in vec]
+                v = [y.rstrip() for y in vec]
                 if compat.PY3:
-                    v = [x.decode(self._encoding) for x in v]
+                    v = [y.decode(self._encoding) for y in v]
             df[x] = v
 
         if self._index is None:
