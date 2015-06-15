@@ -2366,7 +2366,7 @@ for some advanced strategies
    As of version 0.15.0, pandas requires ``PyTables`` >= 3.0.0. Stores written with prior versions of pandas / ``PyTables`` >= 2.3 are fully compatible (this was the previous minimum ``PyTables`` required version).
 
 .. warning::
-   
+
    There is a ``PyTables`` indexing bug which may appear when querying stores using an index.  If you see a subset of results being returned, upgrade to ``PyTables`` >= 3.2.  Stores created previously will need to be rewritten using the updated version.
 
 .. ipython:: python
@@ -4019,14 +4019,12 @@ easy conversion to and from pandas.
 
 .. _xray: http://xray.readthedocs.org/
 
-.. _io.perf:
+.. _io.sas:
 
 SAS Format
 ----------
 
 .. versionadded:: 0.17.0
-
-.. _io.sas:
 
 The top-level function ``read_sas`` currently can read (but not write)
 SAS xport (.XPT) format files.  Pandas cannot currently handle
@@ -4041,13 +4039,24 @@ variables.
 
 Read a SAS XPORT file:
 
+.. code-block:: python
+
     df = pd.read_sas('sas_xport.xpt')
 
 Obtain an iterator and read an XPORT file 100,000 lines at a time:
 
+.. code-block:: python
+
     rdr = pd.read_sas('sas_xport.xpt', chunk=100000)
     for chunk in rdr:
         do_something(chunk)
+
+The specification_ for the xport file format is available from the SAS
+web site.
+
+.. _specification: https://support.sas.com/techsup/technote/ts140.pdf
+
+.. _io.perf:
 
 Performance Considerations
 --------------------------
