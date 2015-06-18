@@ -35,10 +35,6 @@ Parameters
 filepath_or_buffer : string or file-like object
     Path to SAS file or object implementing binary read method."""
 
-_format_param_doc = """\
-format : string
-    Data file format, only xport is currently implemented."""
-
 _params2_doc = """\
 index : identifier of index column
     Identifier of column that should be used as index of the DataFrame.
@@ -70,12 +66,16 @@ DataFrame or XportReader
 Examples
 --------
 Read a SAS Xport file:
->> df = pandas.read_sas('filename.XPT')
+
+>>> df = pandas.read_sas('filename.XPT')
 
 Read a Xport file in 10,000 line chunks:
->> itr = pandas.read_sas('filename.XPT', chunksize=10000)
->> for chunk in itr:
->>     do_something(chunk)
+
+>>> itr = pandas.read_sas('filename.XPT', chunksize=10000)
+>>> for chunk in itr:
+>>>     do_something(chunk)
+
+.. versionadded:: 0.17.0
 """ % {"_base_params_doc": _base_params_doc,
        "_format_params_doc": _format_params_doc,
        "_params2_doc": _params2_doc,
@@ -116,6 +116,9 @@ A DataFrame.
 @Appender(_read_sas_doc)
 def read_sas(filepath_or_buffer, format='xport', index=None, encoding='ISO-8859-1',
              chunksize=None, iterator=False):
+
+    if format.lower() != 'xport':
+        raise ValueError('only xport format is supported')
 
     reader = XportReader(filepath_or_buffer, index=index, encoding=encoding,
                          chunksize=chunksize)
