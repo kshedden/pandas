@@ -117,11 +117,13 @@ A DataFrame.
 def read_sas(filepath_or_buffer, format='xport', index=None, encoding='ISO-8859-1',
              chunksize=None, iterator=False):
 
-    if format.lower() != 'xport':
-        raise ValueError('only xport format is supported')
+    format = format.lower()
 
-    reader = XportReader(filepath_or_buffer, index=index, encoding=encoding,
-                         chunksize=chunksize)
+    if format == 'xport':
+        reader = XportReader(filepath_or_buffer, index=index, encoding=encoding,
+                             chunksize=chunksize)
+    else:
+        raise ValueError('only xport format is supported')
 
     if iterator or chunksize:
         return reader
@@ -261,12 +263,12 @@ class XportReader(object):
         # read file header
         line1 = self._get_row()
         if line1 != _correct_line1:
-            raise Exception("Header record is not an XPORT file.")
+            raise ValueError("Header record is not an XPORT file.")
 
         line2 = self._get_row()
         file_info = _split_line(line2, [ ['prefix',24], ['version',8], ['OS',8], ['_',24], ['created',16]])
         if file_info['prefix'] != "SAS     SAS     SASLIB":
-            raise Exception("Header record has invalid prefix.")
+            raise ValueError("Header record has invalid prefix.")
         file_info['created'] = _parse_date(file_info['created'])
         self.file_info = file_info
 
@@ -277,7 +279,7 @@ class XportReader(object):
         header1 = self._get_row()
         header2 = self._get_row()
         if not header1.startswith(_correct_header1) or not header2 == _correct_header2:
-            raise Exception("Member header not found.")
+            raise ValueError("Member header not found.")
         fieldnamelength = int(header1[-5:-2]) # usually 140, could be 135
 
         # member info
@@ -325,7 +327,7 @@ class XportReader(object):
 
         header = self._get_row()
         if not header == _correct_obs_header:
-            raise Exception("Observation header not found.")
+            raise ValueError("Observation header not found.")
 
         self.fields = fields
         self.record_length = obs_length
