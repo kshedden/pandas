@@ -22,6 +22,7 @@ import pandas.util.testing as tm
 from pandas.tslib import NaT
 from pandas import compat
 
+
 class TestStata(tm.TestCase):
 
     def setUp(self):
@@ -76,6 +77,8 @@ class TestStata(tm.TestCase):
         self.dta20_117 = os.path.join(self.dirpath, 'stata11_117.dta')
 
         self.dta21_117 = os.path.join(self.dirpath, 'stata12_117.dta')
+
+        self.dta22_118 = os.path.join(self.dirpath, 'stata14_118.dta')
 
     def read_dta(self, file):
         # Legacy default reader configuration
@@ -243,6 +246,24 @@ class TestStata(tm.TestCase):
             columns=['x', 'y', 'z'])
 
         tm.assert_frame_equal(parsed_117, expected, check_dtype=False)
+
+
+    def test_read_dta18(self):
+        parsed_118 = self.read_dta(self.dta22_118)
+        parsed_118["Bytes"] = parsed_118["Bytes"].astype('O')
+
+        expected = DataFrame.from_records(
+            [['Cat', 'Bogota', 'Bogotá', 1, 1.0, 'option b Ã\x9cnicode', 1.0],
+             ['Dog', 'Boston', 'Uzunköprü', np.nan, np.nan, np.nan, np.nan],
+             ['Plane', 'Rome', 'Tromsø', 0, 0.0, 'option a', 0.0],
+             ['Potato', 'Tokyo', 'Elâzığ', -4, 4.0, 4, 4],
+             ['', '', '', 0, 0.3332999, 'option a', 1/3.]
+             ],
+            columns=['Things', 'Cities', 'Unicode_Cities_Strl', 'Ints', 'Floats', 'Bytes', 'Longs'])
+        expected["Floats"] = expected["Floats"].astype(np.float32)
+        for col in parsed_118.columns:
+            tm.assert_almost_equal(parsed_118[col], expected[col])
+
 
     def test_read_write_dta5(self):
         original = DataFrame([(np.nan, np.nan, np.nan, np.nan, np.nan)],
